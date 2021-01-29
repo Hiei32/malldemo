@@ -1,32 +1,36 @@
 <template>
   <tab-bar>
-    <tab-bar-item path="/home" activeColor="deepPick">
+    <tab-bar-item path="/home">
       <template #icon>
-        <img src="assets/img/tabbar/tab01.svg" alt="" />
+        <img src="~assets/img/tabbar/tab01.svg" alt="" class="default-img" />
+        <img src="~assets/img/tabbar/tab01-act.svg" alt="" class="active-img" />
       </template>
       <template #text>
         <span>首页</span>
       </template>
     </tab-bar-item>
-    <tab-bar-item path="/category" activeColor="deepPick">
+    <tab-bar-item path="/category">
       <template #icon>
-        <img src="assets/img/tabbar/tab02.svg" alt="" />
+        <img src="~assets/img/tabbar/tab02.svg" alt="" class="default-img" />
+        <img src="~assets/img/tabbar/tab02-act.svg" alt="" class="active-img" />
       </template>
       <template #text>
         <span>分类</span>
       </template>
     </tab-bar-item>
-    <tab-bar-item path="/cart" activeColor="deepPick">
+    <tab-bar-item path="/cart">
       <template #icon>
-        <img src="assets/img/tabbar/tab03.svg" alt="" />
+        <img src="~assets/img/tabbar/tab03.svg" alt="" class="default-img" />
+        <img src="~assets/img/tabbar/tab03-act.svg" alt="" class="active-img" />
       </template>
       <template #text>
         <span>购物车</span>
       </template>
     </tab-bar-item>
-    <tab-bar-item path="/profile" activeColor="deepPick">
+    <tab-bar-item path="/profile">
       <template #icon>
-        <img src="assets/img/tabbar/tab04.svg" alt="" />
+        <img src="~assets/img/tabbar/tab04.svg" alt="" class="default-img" />
+        <img src="~assets/img/tabbar/tab04-act.svg" alt="" class="active-img" />
       </template>
       <template #text>
         <span>我的</span>
@@ -46,26 +50,7 @@ export default {
     TabBarItem,
   },
   data() {
-    return {
-      navi: [
-        {
-          icon: "assets/img/tabbar/tab01.svg",
-          text: "首页",
-        },
-        {
-          icon: "assets/img/tabbar/tab02.svg",
-          text: "分类",
-        },
-        {
-          icon: "assets/img/tabbar/tab03.svg",
-          text: "购物车",
-        },
-        {
-          icon: "assets/img/tabbar/tab04.svg",
-          text: "我的",
-        },
-      ],
-    };
+    return {};
   },
 };
 </script>

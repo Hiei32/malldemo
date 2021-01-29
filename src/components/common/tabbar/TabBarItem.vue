@@ -8,19 +8,23 @@
 <script>
 export default {
   name: "TabBarItem",
-  props:{
-    path:String
+  props: {
+    path: String,
   },
   data() {
-    return {
-      isActive: false,
-    };
+    return {};
   },
-  methods:{
-    itemClick(){
-      this.$router.replace(this.path)
-    }
-  }
+  methods: {
+    itemClick() {
+      if(this.$route.path.indexOf(this.path) === 0) return
+      this.$router.push(this.path);
+    },
+  },
+  computed: {
+    isActive() {
+      return this.$route.path.indexOf(this.path) !== -1;
+    },
+  },
 };
 </script>
 
@@ -33,15 +37,31 @@ export default {
   flex-direction: column;
   color: #000;
 
-  &.active {
-    color: rgb(0, 135, 220);
+  img {
+    width: 20px;
+    height: 20px;
+    margin: 2px 0 4px;
+    opacity: 0.75;
+
+    &.default-img {
+      display: block;
+    }
+    &.active-img {
+      display: none;
+    }
   }
 
-  img {
-    width: 24px;
-    height: 24px;
-    margin-top: 2px;
-    opacity: .75;
+  &.active {
+    color: deeppink;
+
+    img {
+      &.default-img {
+        display: none;
+      }
+      &.active-img {
+        display: block;
+      }
+    }
   }
 
   span {
