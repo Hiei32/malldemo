@@ -32,7 +32,7 @@ export default {
   display: flex;
   justify-content: space-around;
   padding: 10px 0;
-  margin-bottom: 10px;
+  border-bottom: 10px solid #eee;
 
   a {
     flex: 1;
