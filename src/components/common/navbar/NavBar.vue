@@ -20,6 +20,7 @@ export default {
 
 <style lang='scss' scoped>
 .nav-bar {
+  width: 100%;
   min-height: 44px;
   display: flex;
   color: #fff;

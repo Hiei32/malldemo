@@ -31,5 +31,7 @@ export default {
   width: 100%;
   padding: 5px;
   font-size: 14px;
+  display: flex;
+  flex-wrap: wrap;
 }
 </style>

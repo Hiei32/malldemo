@@ -3,15 +3,17 @@
     <nav-bar class="home-nav">
       <template #center>首页</template>
     </nav-bar>
-    <home-swiper :banners="banners" />
-    <recommend-view :recommends="recommends" />
-    <feature-view />
-    <tab-control class="tab-control" :titles="['流行', '新款', '精选']" />
-    <goods-list :goods="fakeGoods" />
-
-    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    <scroll class="home-body">
+      <home-swiper :banners="banners" />
+      <recommend-view :recommends="recommends" />
+      <feature-view />
+      <tab-control
+        class="tab-control"
+        :titles="['流行', '新款', '精选']"
+        @tabClick="tabClick"
+      />
+      <goods-list :goods="showGoods" />
+    </scroll>
   </div>
 </template>
 
@@ -20,6 +22,7 @@ import HomeSwiper from "./childComps/HomeSwiper";
 import RecommendView from "./childComps/RecommendView";
 import FeatureView from "./childComps/FeatureView";
 
+import Scroll from "components/common/scroll/Scroll";
 import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
@@ -32,6 +35,7 @@ export default {
     HomeSwiper,
     RecommendView,
     FeatureView,
+    Scroll,
     NavBar,
     TabControl,
     GoodsList,
@@ -54,26 +58,61 @@ export default {
           list: [],
         },
       },
-      fakeGoods: [
-        {
-          image: "assets/logo.png",
-          title: "商品名称1",
-          price: "￥100.00",
-          collect: "50",
+      fakeGoods: {
+        pop: {
+          page: 0,
+          list: [
+            {
+              image: "assets/logo.png",
+              title: "流行商品名称1",
+              price: "￥100.00",
+              collect: "50",
+            },
+            {
+              image: "assets/logo.png",
+              title: "流行商品名称2",
+              price: "￥120.00",
+              collect: "32",
+            },
+            {
+              image: "assets/logo.png",
+              title:
+                "流行testtesttesttesttesttesttesttesttesttesttesttesttesttest",
+              price: "￥1200.00",
+              collect: "1",
+            },
+          ],
         },
-        {
-          image: "assets/logo.png",
-          title: "商品名称2",
-          price: "￥120.00",
-          collect: "32",
+        news: {
+          page: 0,
+          list: [
+            {
+              image: "assets/logo.png",
+              title: "新款商品名称1",
+              price: "￥140.00",
+              collect: "12",
+            },
+            {
+              image: "assets/logo.png",
+              title: "新款商品名称2",
+              price: "￥150.00",
+              collect: "20",
+            },
+          ],
         },
-        {
-          image: "assets/logo.png",
-          title: "testtesttesttesttesttesttesttesttesttesttesttesttesttest",
-          price: "￥1200.00",
-          collect: "1",
+        sell: {
+          page: 0,
+          list: [
+            {
+              image: "assets/logo.png",
+              title: "热销商品名称1",
+              price: "￥10.00",
+              collect: "1002",
+            },
+          ],
         },
-      ],
+      },
+      currentType: "pop",
     };
   },
   created() {
@@ -85,7 +124,13 @@ export default {
     this.getHomeGoodsFn("news");
     this.getHomeGoodsFn("sell");
   },
+  computed: {
+    showGoods() {
+      return this.fakeGoods[this.currentType].list;
+    },
+  },
   methods: {
+    // 网络请求
     getHomeMultidataFn() {
       getHomeMultidata().then((res) => {
         this.banners = res.data.banner.list;
@@ -103,27 +148,40 @@ export default {
           console.log("数据获取失败");
         });
     },
+    // 事件监听
+    tabClick(index) {
+      switch (index) {
+        case 0:
+          this.currentType = "pop";
+          break;
+        case 1:
+          this.currentType = "news";
+          break;
+        case 2:
+          this.currentType = "sell";
+      }
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 #home {
-  padding-top: 44px;
-}
+  width: 100%;
+  height: calc(100vh - 50px);
+  position: relative;
 
-.home-nav {
-  background: deeppink;
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 10;
-}
+  .home-nav {
+    background: deeppink;
+  }
 
-.tab-control {
-  position: sticky;
-  top: 44px;
-  background: #fff;
+  .home-body {
+    width: 100%;
+    height: calc(100% - 44px);
+
+    .tab-control {
+      background: #fff;
+    }
+  }
 }
 </style>

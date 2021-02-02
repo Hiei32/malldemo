@@ -13,7 +13,7 @@ export default {
 <style scoped>
 #tab-bar {
   width: 100%;
-  height: 49px;
+  height: 50px;
   background: #f4f4f4;
   position: fixed;
   right: 0;

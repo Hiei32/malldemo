@@ -23,14 +23,13 @@ export default {
 <style lang="scss" scoped>
 .goods {
   width: 50%;
-  float: left;
+  height: 300px;
   padding: 5px;
 
   img {
     width: 100%;
     height: 250px;
     background: #eee;
-    float: left;
   }
 
   b,
@@ -42,7 +41,6 @@ export default {
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
-    float: left;
   }
 
   b {
@@ -50,8 +48,8 @@ export default {
     font-weight: bold;
   }
 
-  span{
-    color: rgba(0,0,0,.75);
+  span {
+    color: #666;
   }
 }
 </style>
