@@ -3,7 +3,14 @@
     <nav-bar class="home-nav">
       <template #center>首页</template>
     </nav-bar>
-    <scroll class="home-body">
+    <scroll
+      class="home-body"
+      ref="scroll"
+      :probe-type="1"
+      @scrollPosition="contentScroll"
+      :pull-up-load="true"
+      @scrollUpload="contentLoad"
+    >
       <home-swiper :banners="banners" />
       <recommend-view :recommends="recommends" />
       <feature-view />
@@ -14,6 +21,8 @@
       />
       <goods-list :goods="showGoods" />
     </scroll>
+    <!-- native修饰符在组件事件监听时使用 -->
+    <back-top @click.native="backTop" v-show="isBackTop" />
   </div>
 </template>
 
@@ -26,6 +35,7 @@ import Scroll from "components/common/scroll/Scroll";
 import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
+import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
@@ -39,6 +49,7 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
+    BackTop,
   },
   data() {
     return {
@@ -113,6 +124,7 @@ export default {
         },
       },
       currentType: "pop",
+      isBackTop: false,
     };
   },
   created() {
@@ -143,8 +155,10 @@ export default {
         .then((res) => {
           this.goods[type].list.push(...res.data.list);
           this.goods[type].page += 1;
+          this.$refs.scroll.finishPullUp();
         })
         .catch((err) => {
+          this.$refs.scroll.finishPullUp();
           console.log("数据获取失败");
         });
     },
@@ -160,6 +174,16 @@ export default {
         case 2:
           this.currentType = "sell";
       }
+    },
+    backTop() {
+      this.$refs.scroll.backTop(0, 0);
+    },
+    contentScroll(position) {
+      this.isBackTop = position.y < -300 ? true : false;
+    },
+    contentLoad() {
+      this.getHomeGoodsFn(this.currentType);
+      //this.$refs.scroll.scroll.refresh();
     },
   },
 };
