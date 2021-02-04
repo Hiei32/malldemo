@@ -1,6 +1,7 @@
 <template>
-  <div class="goods">
-    <img :src="goodsItem.image" alt="" />
+  <div class="goods" @click="itemClick">
+    <img src="~assets/img/home/clothing.jpeg" alt="" @load="imageLoad" />
+    <!-- <img :src="goodsItem.image" alt="" /> -->
     <b>{{ goodsItem.title }}</b>
     <span>{{ goodsItem.price }} - 收藏：{{ goodsItem.collect }}</span>
   </div>
@@ -17,18 +18,25 @@ export default {
       },
     },
   },
+  methods: {
+    imageLoad() {
+      //事件总线发射
+      this.$bus.$emit("imageLoaded");
+    },
+    itemClick() {
+      this.$router.push("/detail/" + this.goodsItem.iid);
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .goods {
   width: 50%;
-  height: 300px;
   padding: 5px;
 
   img {
     width: 100%;
-    height: 250px;
     background: #eee;
   }
 

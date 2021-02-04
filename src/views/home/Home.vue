@@ -3,21 +3,28 @@
     <nav-bar class="home-nav">
       <template #center>首页</template>
     </nav-bar>
+    <tab-control
+      class="home-tab"
+      :titles="['流行', '新款', '精选']"
+      @tabClick="tabClick"
+      ref="tabbarFixed"
+      v-show="isCeiling"
+    />
     <scroll
       class="home-body"
       ref="scroll"
-      :probe-type="1"
+      :probe-type="3"
       @scrollPosition="contentScroll"
       :pull-up-load="true"
       @scrollUpload="contentLoad"
     >
-      <home-swiper :banners="banners" />
+      <home-swiper :banners="banners" @swiperImageLoaded="swiperImageLoaded" />
       <recommend-view :recommends="recommends" />
       <feature-view />
       <tab-control
-        class="tab-control"
         :titles="['流行', '新款', '精选']"
         @tabClick="tabClick"
+        ref="tabbar"
       />
       <goods-list :goods="showGoods" />
     </scroll>
@@ -38,6 +45,8 @@ import GoodsList from "components/content/goods/GoodsList";
 import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
+
+import { debounce } from "common/utils";
 
 export default {
   name: "Home",
@@ -74,23 +83,26 @@ export default {
           page: 0,
           list: [
             {
-              image: "assets/logo.png",
+              image: "assets/img/home/clothing.jpeg",
               title: "流行商品名称1",
               price: "￥100.00",
               collect: "50",
+              iid:"2lkjdls"
             },
             {
-              image: "assets/logo.png",
+              image: "assets/img/home/clothing.jpeg",
               title: "流行商品名称2",
               price: "￥120.00",
               collect: "32",
+              iid:"askdfjoi"
             },
             {
-              image: "assets/logo.png",
+              image: "assets/img/home/clothing.jpeg",
               title:
                 "流行testtesttesttesttesttesttesttesttesttesttesttesttesttest",
               price: "￥1200.00",
               collect: "1",
+              iid:"cl9vmld"
             },
           ],
         },
@@ -102,12 +114,14 @@ export default {
               title: "新款商品名称1",
               price: "￥140.00",
               collect: "12",
+              iid:"qpdalkf"
             },
             {
               image: "assets/logo.png",
               title: "新款商品名称2",
               price: "￥150.00",
               collect: "20",
+              iid:"5fqa52a1d"
             },
           ],
         },
@@ -119,13 +133,50 @@ export default {
               title: "热销商品名称1",
               price: "￥10.00",
               collect: "1002",
+              iid:"4eopfka"
+            },
+            {
+              image: "assets/logo.png",
+              title: "热销商品名称2",
+              price: "￥10.00",
+              collect: "1002",
+              iid:"p[akdfld"
+            },
+            {
+              image: "assets/logo.png",
+              title: "热销商品名称3",
+              price: "￥10.00",
+              collect: "1002",
+              iid:"sdfklja"
+            },
+            {
+              image: "assets/logo.png",
+              title: "热销商品名称4",
+              price: "￥10.00",
+              collect: "1002",
+              iid:"aemfsdf"
+            },
+            {
+              image: "assets/logo.png",
+              title: "热销商品名称5",
+              price: "￥10.00",
+              collect: "1002",
+              iid:"piqwfd"
             },
           ],
         },
       },
       currentType: "pop",
       isBackTop: false,
+      tabPosTop: 0,
+      isCeiling: false,
+      saveY: 0,
     };
+  },
+  computed: {
+    showGoods() {
+      return this.fakeGoods[this.currentType].list;
+    },
   },
   created() {
     // 请求轮播图数据
@@ -136,10 +187,13 @@ export default {
     this.getHomeGoodsFn("news");
     this.getHomeGoodsFn("sell");
   },
-  computed: {
-    showGoods() {
-      return this.fakeGoods[this.currentType].list;
-    },
+  mounted() {
+    //事件总线监听
+    //防抖函数-提高性能
+    const refresh = debounce(this.$refs.scroll.refresh, 50);
+    this.$bus.$on("imageLoaded", () => {
+      refresh();
+    });
   },
   methods: {
     // 网络请求
@@ -158,8 +212,8 @@ export default {
           this.$refs.scroll.finishPullUp();
         })
         .catch((err) => {
-          this.$refs.scroll.finishPullUp();
           console.log("数据获取失败");
+          this.$refs.scroll.finishPullUp();
         });
     },
     // 事件监听
@@ -174,17 +228,31 @@ export default {
         case 2:
           this.currentType = "sell";
       }
+      this.$refs.tabbar.currentIndex = index;
+      this.$refs.tabbarFixed.currentIndex = index;
     },
     backTop() {
       this.$refs.scroll.backTop(0, 0);
     },
     contentScroll(position) {
       this.isBackTop = position.y < -300 ? true : false;
+      this.isCeiling = this.tabPosTop < -position.y;
     },
     contentLoad() {
       this.getHomeGoodsFn(this.currentType);
-      //this.$refs.scroll.scroll.refresh();
     },
+    swiperImageLoaded() {
+      this.$refs.scroll.refresh();
+      //$el获取组件中的元素
+      this.tabPosTop = this.$refs.tabbar.$el.offsetTop - 44;
+    },
+  },
+  activated() {
+    this.$refs.scroll.backTop(0, this.saveY, 0);
+    this.$refs.scroll.refresh();
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.getScrollY();
   },
 };
 </script>
@@ -199,13 +267,16 @@ export default {
     background: deeppink;
   }
 
+  .home-tab {
+    background: #fff;
+    position: absolute;
+    z-index: 50;
+    top: 44px;
+  }
+
   .home-body {
     width: 100%;
     height: calc(100% - 44px);
-
-    .tab-control {
-      background: #fff;
-    }
   }
 }
 </style>

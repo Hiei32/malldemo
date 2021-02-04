@@ -12,5 +12,6 @@ module.exports = {
       .set('network', resolve('src/network'))
       .set('views', resolve('src/views'))
       .set('static', resolve('src/static'))
+      .set('common', resolve('src/common'))
   }
 }
